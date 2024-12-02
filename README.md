@@ -122,4 +122,8 @@ This MATLAB project provides a complete toolkit for simulating and analyzing Ort
 1. Clone the repository:
    ```bash
    git clone https://github.com/shayanzargari/OFDM-Received-Signal-Analysis-Tool.git
-   cd OFDM-Received-Signal-Analysis-Tool
+   Launch MATLAB.
+   Runb the file OFDMToolGUI.m in the MATLAB editor.
+
+### Acknowledgments
+This tool was developed by Shayan Zargari as part of a wireless communication project. Contributions and feedback are welcome!
