@@ -1,16 +1,16 @@
 # **OFDM Received Signal Analysis Tool**
 
 ## **Overview**
-This MATLAB project provides a toolkit to analyze single-antenna OFDM receiver systems under AWG noise. All the necessary parameters are estimated blindly. 
+This MATLAB project provides a toolkit to analyze single-antenna OFDM receiver systems under AWGN noise. All necessary parameters are estimated blindly. 
 
 ---
 
 ## **Repository Structure**
 
 ### **Main Functions**
-- **`main.m`**: This main function includes all subfunctions for estimating the received OFDM signal.
-- **`OFDMToolGUI.m`**: This GUI tool provides an interactive platform for parameter initialization.
-
+- **`main.m`**: Integrates all subfunctions for estimating the received OFDM signal.
+- **`OFDMToolGUI.m`**: A GUI tool for interactive parameter initialization.
+- **`initializeParameters.m`**: Defines essential system parameters for simulation.
 
 ---
 
@@ -23,75 +23,65 @@ This MATLAB project provides a toolkit to analyze single-antenna OFDM receiver s
 
 ---
 
-### **OFDM Core Functions**
 ### **OFDM Processing Functions**
-
 - **`calOFDMSymParams.m`**  
-  - Estimate the number of OFDM symbols using lags corresponding to the autocorrelation of the received OFDM signal.
-  - Calculate cyclic prefix (CP) length based on the length of the received OFDM signal, number of OFDM symbols, and FFT size.
+  - Estimates the number of OFDM symbols using lags from the autocorrelation of the received OFDM signal.
+  - Calculates the cyclic prefix (CP) length based on the received OFDM signal length, number of OFDM symbols, and FFT size.
 
 - **`removeCyclicPrefix.m`**  
-  - Removes the cyclic prefix from the received OFDM signal for each OFDM.
+  - Removes the cyclic prefix from each OFDM symbol in the received signal.
 
 - **`processFFT.m`**  
-  - Transforms the OFDM signal from the time domain to the frequency domain using FFT.  
+  - Converts the OFDM signal from the time domain to the frequency domain using FFT.
 
-- **`freqAnalyzer.m`**  
-  - Analyzes the frequency components of an OFDM signal for spectrum visualization.  
-  - It uses FFT-based spectral analysis to calculate and visualize the power spectral density (PSD).
-
-- **`calSignalBW.m`**  
-  - Computes the bandwidth of a signal based on its Power Spectral Density (PSD) and user-defined criteria.  
-  - **Bandwidth Calculation Types**:  
-    - **`threshold`**: Identifies signal regions exceeding a threshold fraction of the maximum PSD.  
-    - **`3dB`**: Computes bandwidth where the PSD is within -3 dB of its maximum value.  
-    - **`OBW`**: Determines Occupied Bandwidth containing a specified percentage (e.g., 99%) of total signal power.  
+- **`reorderData.m`**  
+  - Processes FFT output to retain only occupied subcarriers by removing virtual subcarriers and reordering the data.
+  - Extracts active subcarriers from the lower and upper spectrum, combines them into one signal, and removes unused subcarriers for better organization.
 
 ---
 
 ### **Signal Analysis Functions**
-14. **`estSNRandModulation.m`**  
-    - Estimates the Signal-to-Noise Ratio (SNR) and determines the modulation scheme.  
-    - **Output:** Estimated SNR and modulation type.
+- **`estSNRandModulation.m`**  
+  - Estimates the signal-to-noise ratio (SNR) for soft decoding and identifies the modulation scheme and order.  
+  - **Method**: Uses autocorrelation to calculate SNR by measuring the signal peak and noise floor. Determines modulation type (e.g., PSK, QAM) by clustering signal amplitudes and mapping cluster counts.
 
-15. **`autoCorrAnalyze.m`**  
-    - Performs autocorrelation analysis on the received signal to estimate synchronization and detect cyclic prefix boundaries.
+- **`autoCorrAnalyze.m`**  
+  - Performs autocorrelation on the received signal to detect peaks for cyclic prefix boundary estimation.  
+  - **Method**: Computes normalized autocorrelation, detects peaks exceeding a threshold, and extracts corresponding lags, which are used in `calOFDMSymParams.m`.
 
-16. **`reorderData.m`**  
-    - Reorders the received data to correct subcarrier mapping.
+- **`calSignalBW.m`**  
+  - Computes the bandwidth of a signal based on its Power Spectral Density (PSD) and user-defined criteria.  
+  - **Method**: Evaluates bandwidth using threshold levels, -3 dB range, or occupied bandwidth containing a specified fraction of total power.
 
-17. **`softDemod.m`**  
-    - Implements soft demodulation for advanced decoding techniques.  
+- **`estSubSpc.m`**  
+  - Estimates the subcarrier spacing in an OFDM system.  
+  - **Method**: Detects frequency peaks in the PSD, calculates pairwise frequency differences, and estimates spacing using either the mean or k-means clustering approach.
 
-18. **`optDetector.m`**  
-    - Optimizes signal detection to reduce errors.  
-    - **Output:** Detected symbols.
-
-19. **`findMinDis.m`**  
-    - Computes the minimum distance between received symbols and the ideal constellation points.  
-    - **Output:** Decoded symbols with minimized errors.
-
-20. **`RxSignalOFDM.mat`**  
-    - A sample dataset for testing and validating the OFDM receiver.
+- **`freqAnalyzer.m`**  
+  - Analyzes the frequency components of an OFDM signal for spectrum visualization.  
+  - **Method**: Uses FFT-based spectral analysis to calculate and visualize the PSD.
 
 ---
 
-### **Visualization and User Interface**
-21. **`OFDMToolGUI.m`**  
-    - A graphical user interface (GUI) for visualizing OFDM system parameters and results.
+### **Detection Functions**
+- **`optDetector.m`**  
+  - Optimally detects received symbols using hard or soft demodulation.  
+  - **Method**: Maps received signals to the nearest constellation points (hard demodulation) or calculates LLRs (soft demodulation) for decoding.
 
-22. **`estSubSpc.m`**  
-    - Estimates the subcarrier spacing of the OFDM system.
+- **`softDemod.m`**  
+  - Performs soft demodulation by calculating log-likelihood ratios (LLRs) for each bit in the received symbols.  
+  - **Method**: Computes LLRs based on the Euclidean distance between received symbols and constellation points, using Gray or natural coding.
 
-23. **`initializeParameters.m`**  
-    - Initializes system parameters for simulation (e.g., FFT size, subcarrier allocation, cyclic prefix length, and modulation order).
+- **`findMinDis.m`**  
+  - Finds the nearest symbol in the constellation set based on the minimum distance criterion.  
+  - **Method**: Computes the Euclidean distance between the received signal and all constellation points to identify the closest match.
 
 ---
 
 ## **Getting Started**
 
 ### **Requirements**
-- MATLAB (R2021b or later is recommended)
+- MATLAB (R2022b or later recommended)
 - Signal Processing Toolbox (optional for advanced analysis)
 
 ### **Running the Simulation**
@@ -99,7 +89,7 @@ This MATLAB project provides a toolkit to analyze single-antenna OFDM receiver s
    ```bash
    git clone https://github.com/shayanzargari/OFDM-Received-Signal-Analysis-Tool.git
    Launch MATLAB.
-   Runb the file OFDMToolGUI.m in the MATLAB editor.
+   Run file OFDMToolGUI.m in the MATLAB editor.
 
 ### Acknowledgments
 This tool was developed by Shayan Zargari as part of a wireless communication project. Contributions and feedback are welcome!
