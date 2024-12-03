@@ -1,79 +1,55 @@
 # **OFDM Received Signal Analysis Tool**
 
 ## **Overview**
-This MATLAB project provides a complete toolkit for simulating and analyzing Orthogonal Frequency Division Multiplexing (OFDM) systems. It includes functions for transmitter/receiver design, parameter initialization, signal processing, and performance evaluation.
+This MATLAB project provides a toolkit to analyze single-antenna OFDM receiver systems under AWG noise. All the necessary parameters are estimated blindly. 
 
 ---
 
 ## **Repository Structure**
 
 ### **Main Functions**
-1. **`main.m`**  
-   - The primary script for running the OFDM simulation. It integrates all subfunctions to simulate signal generation, transmission, reception, and analysis.
+- **`main.m`**: This main function includes all subfunctions for estimating the received OFDM signal.
+- **`OFDMToolGUI.m`**: This GUI tool provides an interactive platform for parameter initialization.
+
 
 ---
 
-### **Transmitter Functions**
-2. **`mapToPSKSyms.m`**  
-   - Maps input bits to Phase Shift Keying (PSK) symbols for modulation.  
-   - **Input:** Binary data.  
-   - **Output:** Complex PSK symbols.
-
-3. **`mapToQAMSyms.m`**  
-   - Maps input bits to Quadrature Amplitude Modulation (QAM) symbols.  
-   - **Input:** Binary data.  
-   - **Output:** Complex QAM symbols.
-
-4. **`mapToPAMSyms.m`**  
-   - Maps input bits to Pulse Amplitude Modulation (PAM) symbols.  
-   - **Input:** Binary data.  
-   - **Output:** PAM symbols.
-
-5. **`symToBits.m`**  
-   - Converts symbols back to binary data after demodulation.  
-   - **Input:** Received symbols.  
-   - **Output:** Binary data.
-
-6. **`qamToBits.m`**  
-   - Demaps QAM symbols to binary data.  
-   - **Input:** QAM symbols.  
-   - **Output:** Binary data.
-
-7. **`pskToBits.m`**  
-   - Demaps PSK symbols to binary data.  
-   - **Input:** PSK symbols.  
-   - **Output:** Binary data.
-
-8. **`pamToBits.m`**  
-   - Converts PAM symbols back to binary data.  
-   - **Input:** PAM symbols.  
-   - **Output:** Binary data.
+### **Modulation Functions**
+- **`mapToPSKSyms.m`**: Maps input bits to PSK symbols.
+- **`mapToQAMSyms.m`**: Maps input bits to QAM symbols.
+- **`symToBits.m`**: Converts symbols to binary data.
+- **`qamToBits.m`**: Demaps QAM symbols to binary data.
+- **`pskToBits.m`**: Demaps PSK symbols to binary data.
 
 ---
 
 ### **OFDM Core Functions**
-9. **`calOFDMSymParams.m`**  
-   - Calculates key OFDM symbol parameters, such as FFT size, cyclic prefix length, and subcarrier allocation.
+### **OFDM Processing Functions**
 
-10. **`removeCyclicPrefix.m`**  
-    - Removes the cyclic prefix from the received OFDM signal.  
-    - **Input:** Time-domain signal with cyclic prefix.  
-    - **Output:** Signal without cyclic prefix.
+- **`calOFDMSymParams.m`**  
+  - Estimate the number of OFDM symbols using lags corresponding to the autocorrelation of the received OFDM signal.
+  - Calculate cyclic prefix (CP) length based on the length of the received OFDM signal, number of OFDM symbols, and FFT size.
 
-11. **`processFFT.m`**  
-    - Applies the FFT to convert the received signal to the frequency domain.  
-    - **Input:** Time-domain signal.  
-    - **Output:** Frequency-domain signal.
+- **`removeCyclicPrefix.m`**  
+  - Removes the cyclic prefix from the received OFDM signal for each OFDM.
 
-12. **`freqAnalyzer.m`**  
-    - Analyzes the frequency components of the OFDM signal for spectrum visualization.  
+- **`processFFT.m`**  
+  - Transforms the OFDM signal from the time domain to the frequency domain using FFT.  
 
-13. **`calSignalBW.m`**  
-    - Calculates the bandwidth of the OFDM signal.
+- **`freqAnalyzer.m`**  
+  - Analyzes the frequency components of an OFDM signal for spectrum visualization.  
+  - It uses FFT-based spectral analysis to calculate and visualize the power spectral density (PSD).
+
+- **`calSignalBW.m`**  
+  - Computes the bandwidth of a signal based on its Power Spectral Density (PSD) and user-defined criteria.  
+  - **Bandwidth Calculation Types**:  
+    - **`threshold`**: Identifies signal regions exceeding a threshold fraction of the maximum PSD.  
+    - **`3dB`**: Computes bandwidth where the PSD is within -3 dB of its maximum value.  
+    - **`OBW`**: Determines Occupied Bandwidth containing a specified percentage (e.g., 99%) of total signal power.  
 
 ---
 
-### **Channel and Signal Analysis Functions**
+### **Signal Analysis Functions**
 14. **`estSNRandModulation.m`**  
     - Estimates the Signal-to-Noise Ratio (SNR) and determines the modulation scheme.  
     - **Output:** Estimated SNR and modulation type.
