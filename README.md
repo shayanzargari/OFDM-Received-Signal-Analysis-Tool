@@ -50,7 +50,7 @@ This MATLAB project provides a toolkit to analyze single-antenna OFDM receiver s
   - **Method**: Computes normalized autocorrelation, detects peaks exceeding a threshold, and extracts corresponding lags, which are used in `calOFDMSymParams.m`.
 
 - **`calSignalBW.m`**  
-  - Computes the bandwidth of a signal based on its Power Spectral Density (PSD) and user-defined criteria.  
+  - Computes the bandwidth of a signal based on its power spectral density (PSD) and user-defined criteria.  
   - **Method**: Evaluates bandwidth using threshold levels, -3 dB range, or occupied bandwidth containing a specified fraction of total power.
 
 - **`estSubSpc.m`**  
