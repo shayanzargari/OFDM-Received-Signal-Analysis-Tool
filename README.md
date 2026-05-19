@@ -1,7 +1,7 @@
 # **OFDM Received Signal Analysis Tool**
 
 ## **Overview**
-This MATLAB project provides a toolkit to analyze single-antenna OFDM receiver systems under AWGN noise. All necessary parameters are estimated blindly. 
+This MATLAB project provides a toolkit to analyze single-antenna OFDM receiver systems under AWGN noise. Several OFDM parameters are estimated blindly from the received waveform.
 
 ---
 
@@ -9,8 +9,8 @@ This MATLAB project provides a toolkit to analyze single-antenna OFDM receiver s
 
 ### **Main Functions**
 - **`main.m`**: Integrates all subfunctions for estimating the received OFDM signal.
-- **`OFDMToolGUI.m`**: A GUI tool for interactive parameter initialization.
-- **`initializeParameters.m`**: Defines essential system parameters for simulation.
+- **`OFDMToolGUI.m`**: GUI tool for interactive parameter initialization.
+- **`initializeParameters.m`**: Defines default system parameters.
 
 ---
 
@@ -24,72 +24,85 @@ This MATLAB project provides a toolkit to analyze single-antenna OFDM receiver s
 ---
 
 ### **OFDM Processing Functions**
-- **`calOFDMSymParams.m`**  
-  - Estimates the number of OFDM symbols using lags from the autocorrelation of the received OFDM signal.
-  - Calculates the cyclic prefix (CP) length based on the received OFDM signal length, number of OFDM symbols, and FFT size.
+- **`calOFDMSymParams.m`**:
+  - Estimates the number of OFDM symbols using autocorrelation peaks.
+  - Calculates cyclic prefix length.
 
-- **`removeCyclicPrefix.m`**  
-  - Removes the cyclic prefix from each OFDM symbol in the received signal.
+- **`removeCyclicPrefix.m`**:
+  - Removes cyclic prefixes from OFDM symbols.
 
-- **`processFFT.m`**  
-  - Converts the OFDM signal from the time domain to the frequency domain using FFT.
+- **`processFFT.m`**:
+  - Performs FFT processing and normalization.
 
-- **`reorderData.m`**  
-  - Processes FFT output to retain only occupied subcarriers by removing virtual subcarriers and reordering the data.
-  - Extracts active subcarriers from the lower and upper spectrum, combines them into one signal, and removes unused subcarriers for better organization.
+- **`reorderData.m`**:
+  - Reorders FFT bins and extracts active subcarriers.
 
 ---
 
 ### **Signal Analysis Functions**
-- **`estSNRandModulation.m`**  
-  - Estimates the signal-to-noise ratio (SNR) for soft decoding and identifies the modulation scheme and order.  
-  - **Method**: Uses autocorrelation to calculate SNR by measuring the signal peak and noise floor. Determines modulation type (e.g., PSK, QAM) by clustering signal amplitudes and mapping cluster counts.
+- **`estSNRandModulation.m`**:
+  - Estimates SNR and identifies modulation type/order.
 
-- **`autoCorrAnalyze.m`**  
-  - Performs autocorrelation on the received signal to detect peaks for cyclic prefix boundary estimation.  
-  - **Method**: Computes normalized autocorrelation, detects peaks exceeding a threshold, and extracts corresponding lags, which are used in `calOFDMSymParams.m`.
+- **`autoCorrAnalyze.m`**:
+  - Performs normalized autocorrelation and peak detection.
 
-- **`calSignalBW.m`**  
-  - Computes the bandwidth of a signal based on its power spectral density (PSD) and user-defined criteria.  
-  - **Method**: Evaluates bandwidth using threshold levels, -3 dB range, or occupied bandwidth containing a specified fraction of total power.
+- **`calSignalBW.m`**:
+  - Estimates bandwidth using threshold, 3 dB, or occupied bandwidth methods.
 
-- **`estSubSpc.m`**  
-  - Estimates the subcarrier spacing in an OFDM system.  
-  - **Method**: Detects frequency peaks in the PSD, calculates pairwise frequency differences, and estimates spacing using either the mean or k-means clustering approach.
+- **`estSubSpc.m`**:
+  - Estimates OFDM subcarrier spacing.
 
-- **`freqAnalyzer.m`**  
-  - Analyzes the frequency components of an OFDM signal for spectrum visualization.  
-  - **Method**: Uses FFT-based spectral analysis to calculate and visualize the PSD.
+- **`freqAnalyzer.m`**:
+  - Performs FFT-based spectrum analysis.
 
 ---
 
 ### **Detection Functions**
-- **`optDetector.m`**  
-  - Optimally detects received symbols using hard or soft demodulation.  
-  - **Method**: Maps received signals to the nearest constellation points (hard demodulation) or calculates LLRs (soft demodulation) for decoding.
+- **`optDetector.m`**:
+  - Performs hard or soft symbol detection.
 
-- **`softDemod.m`**  
-  - Performs soft demodulation by calculating log-likelihood ratios (LLRs) for each bit in the received symbols.  
-  - **Method**: Computes LLRs based on the Euclidean distance between received symbols and constellation points, using Gray or natural coding.
+- **`softDemod.m`**:
+  - Computes log-likelihood ratios (LLRs).
 
-- **`findMinDis.m`**  
-  - Finds the nearest symbol in the constellation set based on the minimum distance criterion.  
-  - **Method**: Computes the Euclidean distance between the received signal and all constellation points to identify the closest match.
+- **`findMinDis.m`**:
+  - Finds the nearest constellation point.
 
 ---
 
-## **Getting Started**
+## **Requirements**
+- MATLAB R2022b or newer recommended
+- Signal Processing Toolbox
+- Statistics and Machine Learning Toolbox (required for k-means option)
+- Communications Toolbox (required for some modulation utilities)
 
-### **Requirements**
-- MATLAB (R2022b or later recommended)
-- Signal Processing Toolbox (optional for advanced analysis)
+---
 
-### **Running the Simulation**
+## **Running the Tool**
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/shayanzargari/OFDM-Received-Signal-Analysis-Tool.git
-   Launch MATLAB.
-   Run file OFDMToolGUI.m in the MATLAB editor.
 
-### Acknowledgments
-This tool was developed by Shayan Zargari as part of a wireless communication project. Contributions and feedback are welcome!
+```bash
+git clone https://github.com/shayanzargari/OFDM-Received-Signal-Analysis-Tool.git
+```
+
+2. Open MATLAB.
+3. Navigate to the repository folder.
+4. Run:
+
+```matlab
+OFDMToolGUI
+```
+
+5. Load a `.mat` file containing `RxSignal`.
+6. Configure parameters and start the simulation.
+
+---
+
+## **Notes**
+- The tool currently supports PSK and QAM workflows.
+- Input signals should be synchronized reasonably well for reliable blind estimation.
+- Incorrect OFDM parameter estimation can affect FFT extraction and demodulation performance.
+
+---
+
+## **Acknowledgments**
+Developed by Shayan Zargari as part of a wireless communication research project.
